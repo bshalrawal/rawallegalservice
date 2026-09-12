@@ -1,0 +1,504 @@
+/* ===================================================================
+   Rawal Legal Service — Under Construction
+   Premium corporate / legal aesthetic
+   =================================================================== */
+
+/* ---------- Custom Properties ---------- */
+:root {
+  --clr-bg:        #0a0c14;
+  --clr-bg-deep:   #05060b;
+  --clr-navy:      #0f1524;
+  --clr-gold:      #c9a84c;
+  --clr-gold-light:#e2c97e;
+  --clr-gold-dim:  rgba(201,168,76,.18);
+  --clr-white:     #f0ece4;
+  --clr-off-white: #c5bfb3;
+  --clr-glass:     rgba(255,255,255,.04);
+  --clr-glass-border: rgba(255,255,255,.07);
+
+  --ff-heading: 'Georgia', 'Times New Roman', serif;
+  --ff-body:    'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+
+  --transition-smooth: .55s cubic-bezier(.25,.46,.45,.94);
+}
+
+/* ---------- Reduced-motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--ff-body);
+  background: var(--clr-bg);
+  color: var(--clr-white);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ---------- Page-load overlay ---------- */
+.page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--clr-bg-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity .8s ease, visibility .8s ease;
+}
+.page-loader.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.loader-bar {
+  width: 120px;
+  height: 2px;
+  background: rgba(255,255,255,.08);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+.loader-bar::after {
+  content: '';
+  position: absolute;
+  left: -40%;
+  top: 0;
+  height: 100%;
+  width: 40%;
+  background: var(--clr-gold);
+  border-radius: 2px;
+  animation: loaderSlide 1s ease-in-out infinite;
+}
+@keyframes loaderSlide {
+  0%   { left: -40%; }
+  100% { left: 100%; }
+}
+
+/* ---------- Background canvas ---------- */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ---------- Ambient light rays ---------- */
+.light-rays {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.light-rays .ray {
+  position: absolute;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, var(--clr-gold-dim), transparent);
+  opacity: 0;
+  animation: rayDrift 12s ease-in-out infinite;
+}
+.light-rays .ray:nth-child(1) { left: 15%; height: 60vh; top: -10vh; animation-delay: 0s; }
+.light-rays .ray:nth-child(2) { left: 40%; height: 45vh; top:  5vh; animation-delay: 3s; }
+.light-rays .ray:nth-child(3) { left: 70%; height: 55vh; top: -5vh; animation-delay: 6s; }
+.light-rays .ray:nth-child(4) { left: 88%; height: 40vh; top: 10vh; animation-delay: 9s; }
+
+@keyframes rayDrift {
+  0%, 100% { opacity: 0; transform: translateY(-8px); }
+  40%, 60% { opacity: .35; transform: translateY(8px); }
+}
+
+/* ---------- Wrapper ---------- */
+.page-wrapper {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ---------- Main Content ---------- */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem 3rem;
+  text-align: center;
+  position: relative;
+}
+
+/* ---------- Blueprint overlay ---------- */
+.blueprint-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .025;
+  background-image:
+    linear-gradient(var(--clr-gold) 1px, transparent 1px),
+    linear-gradient(90deg, var(--clr-gold) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridPulse 8s ease-in-out infinite;
+}
+@keyframes gridPulse {
+  0%, 100% { opacity: .02; }
+  50%      { opacity: .045; }
+}
+
+/* ---------- Scales of Justice (SVG centerpiece) ---------- */
+.scales-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(460px, 75vw);
+  height: min(460px, 75vw);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  animation: scaleFadeIn 2.5s 1.2s ease forwards;
+}
+@keyframes scaleFadeIn {
+  to { opacity: 1; }
+}
+.scales-container svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* SVG drawing animation */
+.scales-container svg .draw-line {
+  stroke-dasharray: 800;
+  stroke-dashoffset: 800;
+  animation: drawIn 4s 1.6s ease forwards;
+}
+@keyframes drawIn {
+  to { stroke-dashoffset: 0; }
+}
+.scales-container svg .draw-line-slow {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: drawIn 5s 2.2s ease forwards;
+}
+
+/* ---------- Branding ---------- */
+.brand {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeUp 1.1s .4s var(--transition-smooth) forwards;
+}
+.brand__name {
+  font-family: var(--ff-heading);
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-weight: 400;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: var(--clr-white);
+  line-height: 1;
+  position: relative;
+}
+.brand__name::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 1px;
+  margin: 1rem auto 0;
+  background: linear-gradient(90deg, transparent, var(--clr-gold), transparent);
+  animation: lineExpand 1.6s 1s ease forwards;
+}
+@keyframes lineExpand {
+  to { width: 100%; }
+}
+
+.brand__tagline {
+  font-family: var(--ff-body);
+  font-size: clamp(.85rem, 1.8vw, 1.15rem);
+  font-weight: 300;
+  letter-spacing: .55em;
+  text-transform: uppercase;
+  color: var(--clr-gold);
+  margin-top: .8rem;
+  opacity: 0;
+  animation: fadeIn 1.2s 1.3s ease forwards;
+}
+
+/* ---------- Message block ---------- */
+.message {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeUp 1.1s .9s var(--transition-smooth) forwards;
+}
+
+.message__primary {
+  font-family: var(--ff-heading);
+  font-size: clamp(1.35rem, 3.2vw, 2.2rem);
+  font-weight: 400;
+  color: var(--clr-white);
+  line-height: 1.45;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Typewriter cursor */
+.message__primary .cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--clr-gold);
+  margin-left: 4px;
+  vertical-align: text-bottom;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+/* Continuous shimmer on the primary message */
+.message__primary .shimmer-text {
+  background: linear-gradient(
+    105deg,
+    var(--clr-white) 0%,
+    var(--clr-white) 40%,
+    var(--clr-gold-light) 50%,
+    var(--clr-white) 60%,
+    var(--clr-white) 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 6s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%, 100% { background-position: 100% 0; }
+  50%      { background-position: -100% 0; }
+}
+
+.message__secondary {
+  font-family: var(--ff-body);
+  font-size: clamp(.9rem, 1.5vw, 1.05rem);
+  font-weight: 300;
+  color: var(--clr-off-white);
+  margin-top: 1.4rem;
+  letter-spacing: .04em;
+  line-height: 1.65;
+  opacity: 0;
+  animation: fadeIn 1.4s 2.6s ease forwards;
+}
+
+/* ---------- Decorative divider ---------- */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  margin: 2rem 0;
+  opacity: 0;
+  animation: fadeIn 1s 2s ease forwards;
+  position: relative;
+  z-index: 2;
+}
+.divider__line {
+  width: 50px;
+  height: 1px;
+  background: var(--clr-gold-dim);
+}
+.divider__diamond {
+  width: 6px;
+  height: 6px;
+  border: 1px solid var(--clr-gold);
+  transform: rotate(45deg);
+  animation: diamondPulse 3s ease-in-out infinite;
+}
+@keyframes diamondPulse {
+  0%, 100% { opacity: .5; transform: rotate(45deg) scale(1); }
+  50%      { opacity: 1;  transform: rotate(45deg) scale(1.3); }
+}
+
+/* ---------- Glass card (progress indicator) ---------- */
+.status-card {
+  position: relative;
+  z-index: 2;
+  margin-top: 1rem;
+  padding: 1.5rem 2.5rem;
+  border-radius: 8px;
+  background: var(--clr-glass);
+  border: 1px solid var(--clr-glass-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 0;
+  transform: translateY(16px);
+  animation: fadeUp 1s 2.4s ease forwards;
+  overflow: hidden;
+}
+.status-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--clr-gold), transparent);
+  animation: scanLine 5s 3s linear infinite;
+}
+@keyframes scanLine {
+  0%   { left: -100%; }
+  100% { left: 100%; }
+}
+
+.status-card__label {
+  font-size: .7rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--clr-gold);
+  margin-bottom: .6rem;
+}
+.progress-track {
+  width: 220px;
+  height: 2px;
+  background: rgba(255,255,255,.06);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--clr-gold), var(--clr-gold-light));
+  border-radius: 2px;
+  animation: progressGrow 3s 3s ease forwards;
+}
+@keyframes progressGrow {
+  to { width: 65%; }
+}
+
+/* ---------- Column decorations (left & right) ---------- */
+.column-decor {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  z-index: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  opacity: 0;
+  animation: fadeIn 2s 1.5s ease forwards;
+}
+.column-decor--left  { left: 20px; align-items: flex-start; }
+.column-decor--right { right: 20px; align-items: flex-end; }
+
+.column-decor__line {
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--clr-gold-dim), transparent);
+  animation: columnFloat 10s ease-in-out infinite;
+}
+.column-decor__line:nth-child(1) { height: 120px; animation-delay: 0s; }
+.column-decor__line:nth-child(2) { height: 80px;  animation-delay: 2s; }
+.column-decor__line:nth-child(3) { height: 160px; animation-delay: 4s; }
+@keyframes columnFloat {
+  0%, 100% { transform: translateY(0); opacity: .3; }
+  50%      { transform: translateY(-12px); opacity: .7; }
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 2.5rem 2rem;
+  border-top: 1px solid rgba(255,255,255,.04);
+}
+.site-footer__brand {
+  font-family: var(--ff-heading);
+  font-size: .85rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--clr-off-white);
+  opacity: .6;
+}
+.site-footer__copy {
+  font-size: .7rem;
+  color: var(--clr-off-white);
+  opacity: .35;
+  margin-top: .5rem;
+  letter-spacing: .06em;
+}
+.site-footer__contact {
+  font-size: .72rem;
+  color: var(--clr-gold);
+  opacity: .5;
+  margin-top: .8rem;
+  letter-spacing: .08em;
+  transition: opacity var(--transition-smooth);
+}
+.site-footer__contact:hover {
+  opacity: .9;
+}
+
+/* ---------- Utility animations ---------- */
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* ---------- Hover & interactive ---------- */
+.brand__name {
+  transition: text-shadow var(--transition-smooth);
+}
+.brand__name:hover {
+  text-shadow: 0 0 40px rgba(201,168,76,.15);
+}
+.status-card {
+  transition: border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+.status-card:hover {
+  border-color: rgba(201,168,76,.18);
+  box-shadow: 0 4px 40px rgba(201,168,76,.06);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .main-content { padding: 3rem 1.5rem 2rem; }
+  .column-decor { display: none; }
+  .status-card  { padding: 1.2rem 1.6rem; }
+  .progress-track { width: 160px; }
+  .divider__line { width: 30px; }
+  .scales-container { width: min(340px, 85vw); height: min(340px, 85vw); }
+}
+
+@media (max-width: 480px) {
+  .main-content { padding: 2.5rem 1rem 1.5rem; }
+  .brand__name  { letter-spacing: .2em; }
+  .brand__tagline { letter-spacing: .3em; font-size: .75rem; }
+  .status-card { padding: 1rem 1.2rem; }
+  .progress-track { width: 130px; }
+  .scales-container { width: min(260px, 90vw); height: min(260px, 90vw); }
+}
